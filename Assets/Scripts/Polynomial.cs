@@ -1,9 +1,15 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-[ExecuteInEditMode]
+[Serializable]
+public struct ControlPoint
+{
+    public Vector3 pos;
+}
+
 public class Polynomial : MonoBehaviour
 {
     [SerializeField]
@@ -13,8 +19,9 @@ public class Polynomial : MonoBehaviour
     // spline resolution
     [SerializeField]
     private int knots = 99;
+
     [SerializeField]
-    private List<Vector3> controlPoints = new List<Vector3>();
+    private List<ControlPoint> controlPoints = new List<ControlPoint>();
 
     // Start is called before the first frame update
     void Start()
@@ -33,10 +40,10 @@ public class Polynomial : MonoBehaviour
 
         Matrix4x4 M = splineType;
 
-        Vector3 P0 = controlPoints[0];
-        Vector3 P1 = controlPoints[1];
-        Vector3 P2 = controlPoints[2];
-        Vector3 P3 = controlPoints[3];
+        Vector3 P0 = controlPoints[0].pos;
+        Vector3 P1 = controlPoints[1].pos;
+        Vector3 P2 = controlPoints[2].pos;
+        Vector3 P3 = controlPoints[3].pos;
         Matrix4x4 G = new Matrix4x4(
             new Vector4(P0.x, P0.y, P0.z, 1f),
             new Vector4(P1.x, P1.y, P1.z, 1f),
@@ -64,9 +71,27 @@ public class Polynomial : MonoBehaviour
             Gizmos.DrawLine(SplinePolynomial(t), SplinePolynomial(tt));
         }
     }
+}
 
-    private void OnDrawGizmosSelected()
+#if UNITY_EDITOR
+[CustomEditor(typeof(Polynomial))]
+public class PolynomialEditor : Editor
+{
+    private GameObject gameObject;
+    private Polynomial self;
+
+    private void OnEnable()
     {
-        // draw gizmos on control points
+        gameObject = target.GameObject();
+        self = gameObject.GetComponentInParent<Polynomial>();
+    }
+
+    private void OnSceneGUI()
+    {
+        for (int i = 0; i < gameObject.transform.childCount; ++i)
+        {
+            GameObject child = gameObject.transform.GetChild(i).gameObject;
+        }
     }
 }
+#endif
