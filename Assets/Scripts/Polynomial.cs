@@ -12,9 +12,11 @@ public struct ControlPoint
 
 public class Polynomial : MonoBehaviour
 {
+    // degree is useless for now
     [SerializeField]
     private int degree = 3;
-    private Matrix4x4 splineType = SplineType.Bezier;
+    [SerializeField]
+    private SplineType splineType = SplineType.Bezier;
 
     // spline resolution
     [SerializeField]
@@ -23,41 +25,19 @@ public class Polynomial : MonoBehaviour
     [SerializeField]
     private List<ControlPoint> controlPoints = new List<ControlPoint>();
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //for (int i = 0; i < degree + 1; ++i)
-        //{
-        //    controlPoints.Add(Vector3.zero);
-        //}
-    }
-
     public Vector3 SplinePolynomial(float t)
     {
         float t3 = t * t * t;
         float t2 = t * t;
         Vector4 T = new Vector4(t3, t2, t, 1f);
 
-        Matrix4x4 M = splineType;
-
-        Vector3 P0 = controlPoints[0].pos;
-        Vector3 P1 = controlPoints[1].pos;
-        Vector3 P2 = controlPoints[2].pos;
-        Vector3 P3 = controlPoints[3].pos;
-        Matrix4x4 G = new Matrix4x4(
-            new Vector4(P0.x, P0.y, P0.z, 1f),
-            new Vector4(P1.x, P1.y, P1.z, 1f),
-            new Vector4(P2.x, P2.y, P2.z, 1f),
-            new Vector4(P3.x, P3.y, P3.z, 1f)
-            );
+        Vector3 A = controlPoints[0].pos;
+        Vector3 B = controlPoints[1].pos;
+        Vector3 C = controlPoints[2].pos;
+        Vector3 D = controlPoints[3].pos;
 
         // S = T * M * G
-        return (G * M).MultiplyPoint(T);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        return (splineType.G(A, B, C, D) * splineType.M).MultiplyPoint(T);
     }
 
     private void OnDrawGizmos()
