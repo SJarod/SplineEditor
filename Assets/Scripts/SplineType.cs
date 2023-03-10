@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // S(t) = T * M * G
@@ -24,11 +25,19 @@ public class SplineMatrix
         new Vector4(-3f, 3f, 0f, 0f),
         new Vector4(1f, 0f, 0f, 0f)
         );
+
     public static Matrix4x4 BSplineM = new Matrix4x4(
         (1f / 6f) * new Vector4(-1f, 3f, -3f, 1f),
         (1f / 6f) * new Vector4(3f, -6f, 3f, 0f),
         (1f / 6f) * new Vector4(-3f, 0f, 3f, 0f),
         (1f / 6f) * new Vector4(1f, 4f, 1f, 0f)
+        );
+
+    public static Matrix4x4 CatmullRomM = new Matrix4x4(
+        (1f / 2f) * new Vector4(-1f, 3f, -3f, 1f),
+        (1f / 2f) * new Vector4(2f, -5f, 4f, -1f),
+        (1f / 2f) * new Vector4(-1f, 0f, 1f, 0f),
+        (1f / 2f) * new Vector4(0f, 2f, 0f, 0f)
         );
 }
 
@@ -58,6 +67,11 @@ public class SplineUsage
     {
         return BezierG(P0, P1, P2, P3);
     }
+
+    public static Matrix4x4 CatmullRomG(Vector3 P0, Vector3 P1, Vector3 P2, Vector3 P3)
+    {
+        return BezierG(P0, P1, P2, P3);
+    }
 }
 
 public enum ESplineType
@@ -65,6 +79,7 @@ public enum ESplineType
     HERMITE,
     BEZIER,
     BSPLINE,
+    CATMULLROM,
     COUNT
 }
 
@@ -96,6 +111,10 @@ public class SplineType
                 M = SplineMatrix.BSplineM;
                 G = SplineUsage.BSplineG;
                 break;
+            case ESplineType.CATMULLROM:
+                M = SplineMatrix.CatmullRomM;
+                G = SplineUsage.CatmullRomG;
+                break;
             default:
                 break;
         }
@@ -105,4 +124,5 @@ public class SplineType
     public static SplineType Hermite = new SplineType(ESplineType.HERMITE);
     public static SplineType Bezier = new SplineType(ESplineType.BEZIER);
     public static SplineType BSpline = new SplineType(ESplineType.BSPLINE);
+    public static SplineType CatmullRom = new SplineType(ESplineType.CATMULLROM);
 }
