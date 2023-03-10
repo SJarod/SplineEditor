@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -11,27 +12,13 @@ public class Polynomial : MonoBehaviour
 
     // spline resolution
     [SerializeField]
-    private int knots = 10;
+    private int knots = 99;
     [SerializeField]
     private List<Vector3> controlPoints = new List<Vector3>();
-
-    private LineRenderer lr;
-    [SerializeField]
-    private Material lineRendererMat;
 
     // Start is called before the first frame update
     void Start()
     {
-        GameObject go = new GameObject("LineRenderer");
-        lr = go.AddComponent<LineRenderer>();
-
-        lr.positionCount = knots + 1;
-        lr.material = lineRendererMat;
-        lr.startWidth = 0.1f;
-        lr.endWidth = 0.1f;
-        lr.startColor = Color.blue;
-        lr.endColor = Color.blue;
-
         //for (int i = 0; i < degree + 1; ++i)
         //{
         //    controlPoints.Add(Vector3.zero);
@@ -57,16 +44,29 @@ public class Polynomial : MonoBehaviour
             new Vector4(P3.x, P3.y, P3.z, 1f)
             );
 
+        // S = T * M * G
         return (G * M).MultiplyPoint(T);
     }
 
     // Update is called once per frame
     void Update()
     {
-        for (int i = 0; i <= knots; ++i)
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.white;
+
+        for (int i = 0; i < knots; ++i)
         {
             float t = i / (float)knots;
-            lr.SetPosition(i, SplinePolynomial(t));
+            float tt = (i + 1) / (float)knots;
+            Gizmos.DrawLine(SplinePolynomial(t), SplinePolynomial(tt));
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        // draw gizmos on control points
     }
 }
