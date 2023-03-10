@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.TerrainTools;
 using UnityEngine;
 
 [Serializable]
@@ -15,8 +16,7 @@ public class Polynomial : MonoBehaviour
     // degree is useless for now
     [SerializeField]
     private int degree = 3;
-    [SerializeField]
-    private SplineType splineType = SplineType.Bezier;
+    public SplineType splineType = new SplineType(ESplineType.BEZIER);
 
     // spline resolution
     [SerializeField]
@@ -81,6 +81,14 @@ public class PolynomialEditor : Editor
         {
             GameObject child = gameObject.transform.GetChild(i).gameObject;
         }
+    }
+
+    public override void OnInspectorGUI()
+    {
+        // call spline type constructor on inspector update
+        self.splineType = new SplineType(self.splineType.splineType);
+
+        base.OnInspectorGUI();
     }
 }
 #endif

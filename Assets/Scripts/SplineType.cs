@@ -60,18 +60,49 @@ public class SplineUsage
     }
 }
 
+public enum ESplineType
+{
+    HERMITE,
+    BEZIER,
+    BSPLINE,
+    COUNT
+}
+
+[Serializable]
 public class SplineType
 {
+    public ESplineType splineType;
+
+    [HideInInspector]
     public Matrix4x4 M;
+    [HideInInspector]
     public Func<Vector3, Vector3, Vector3, Vector3, Matrix4x4> G;
 
-    public SplineType(Matrix4x4 m, Func<Vector3, Vector3, Vector3, Vector3, Matrix4x4> g)
+    public SplineType(ESplineType st)
     {
-        M = m;
-        G = g;
+        splineType = st;
+
+        switch (splineType)
+        {
+            case ESplineType.HERMITE:
+                M = SplineMatrix.HermiteM;
+                G = SplineUsage.HermiteG;
+                break;
+            case ESplineType.BEZIER:
+                M = SplineMatrix.BezierM;
+                G = SplineUsage.BezierG;
+                break;
+            case ESplineType.BSPLINE:
+                M = SplineMatrix.BSplineM;
+                G = SplineUsage.BSplineG;
+                break;
+            default:
+                break;
+        }
+
     }
 
-    public static SplineType Hermite = new SplineType(SplineMatrix.HermiteM, SplineUsage.HermiteG);
-    public static SplineType Bezier = new SplineType(SplineMatrix.BezierM, SplineUsage.BezierG);
-    public static SplineType BSpline = new SplineType(SplineMatrix.BSplineM, SplineUsage.BSplineG);
+    public static SplineType Hermite = new SplineType(ESplineType.HERMITE);
+    public static SplineType Bezier = new SplineType(ESplineType.BEZIER);
+    public static SplineType BSpline = new SplineType(ESplineType.BSPLINE);
 }
