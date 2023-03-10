@@ -48,7 +48,10 @@ public class Polynomial : MonoBehaviour
             float tt = (i + 1) / (float)knots;
             Gizmos.DrawLine(SplinePolynomial(t), SplinePolynomial(tt));
         }
+    }
 
+    private void OnDrawGizmosSelected()
+    {
         switch (splineType.splineType)
         {
             case ESplineType.HERMITE:

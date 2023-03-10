@@ -43,7 +43,7 @@ public class SplineMatrix
 
 public class SplineUsage
 {
-    public static Matrix4x4 HermiteG(Vector3 P0, Vector3 R0, Vector3 P1, Vector3 R1)
+    public static Matrix4x4 HermiteG(Vector3 R0, Vector3 P0, Vector3 P1, Vector3 R1)
     {
         return new Matrix4x4(
             new Vector4(P0.x, P0.y, P0.z, 1f),

@@ -123,79 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &17054451
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 17054453}
-  - component: {fileID: 17054452}
-  m_Layer: 0
-  m_Name: Spline (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &17054452
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 17054451}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3bff86fc2a2558b47926761e8e0b43d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  degree: 3
-  splineType:
-    splineType: 0
-    M:
-      e00: 2
-      e01: -3
-      e02: 0
-      e03: 1
-      e10: -2
-      e11: 3
-      e12: 0
-      e13: 0
-      e20: 1
-      e21: -2
-      e22: 1
-      e23: 0
-      e30: 1
-      e31: -1
-      e32: 0
-      e33: 0
-  knots: 99
-  CP0:
-    pos: {x: 13.754824, y: -0.4488101, z: 0}
-  CP1:
-    pos: {x: 21.57751, y: -4.5704093, z: 0}
-  CP2:
-    pos: {x: 14.6963825, y: 2.8312902, z: 0}
-  CP3:
-    pos: {x: 22.676357, y: -0.45786655, z: 0}
---- !u!4 &17054453
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 17054451}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &290238836
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,13 +174,13 @@ MonoBehaviour:
       e33: 0
   knots: 99
   CP0:
-    pos: {x: 0, y: 0, z: 0}
+    pos: {x: -0.18207693, y: 0.9769387, z: 0}
   CP1:
-    pos: {x: 3.62913, y: -4.5704093, z: 0}
+    pos: {x: 2.3972292, y: -0.084012985, z: 0}
   CP2:
     pos: {x: 7.450476, y: 2.8312902, z: 0}
   CP3:
-    pos: {x: 13.741451, y: -0.45786655, z: 0}
+    pos: {x: 9.020307, y: -0.25848544, z: 0}
 --- !u!4 &290238838
 Transform:
   m_ObjectHideFlags: 0
