@@ -354,11 +354,11 @@ MonoBehaviour:
   CP0:
     pos: {x: 0, y: 0, z: 0}
   CP1:
-    pos: {x: 26.35, y: 0, z: 0}
+    pos: {x: -9.1, y: -1.5, z: -7.25}
   CP2:
-    pos: {x: 0, y: -4.52, z: 0}
+    pos: {x: 8.4, y: 3.89, z: 5.6}
   CP3:
-    pos: {x: 14.96, y: 3.73, z: 0}
+    pos: {x: 7.79, y: 0, z: 0}
 --- !u!4 &1845770357
 Transform:
   m_ObjectHideFlags: 0

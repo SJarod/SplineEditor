@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.TerrainTools;
+using UnityEditor.UIElements;
 using UnityEngine;
 
 [Serializable]
 public struct ControlPoint
 {
     public Vector3 pos;
+
+    public ControlPoint(Vector3 pos)
+    {
+        this.pos = pos;
+    }
 }
 
 public class Polynomial : MonoBehaviour
@@ -77,10 +83,10 @@ public class PolynomialEditor : Editor
 
     public override void OnInspectorGUI()
     {
+        base.OnInspectorGUI();
+
         // call spline type constructor on inspector update
         self.splineType = new SplineType(self.splineType.splineType);
-
-        base.OnInspectorGUI();
     }
 }
 #endif
