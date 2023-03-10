@@ -25,6 +25,15 @@ public class Polynomial : MonoBehaviour
     [SerializeField]
     private List<ControlPoint> controlPoints = new List<ControlPoint>();
 
+    public Polynomial()
+    {
+        // default control points (4 CP for 3rd degree spline)
+        controlPoints.Add(new ControlPoint());
+        controlPoints.Add(new ControlPoint());
+        controlPoints.Add(new ControlPoint());
+        controlPoints.Add(new ControlPoint());
+    }
+
     public Vector3 SplinePolynomial(float t)
     {
         float t3 = t * t * t;
