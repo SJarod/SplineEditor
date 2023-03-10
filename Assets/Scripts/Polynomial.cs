@@ -52,6 +52,13 @@ public class Polynomial : MonoBehaviour
             float tt = (i + 1) / (float)knots;
             Gizmos.DrawLine(SplinePolynomial(t), SplinePolynomial(tt));
         }
+
+        if (splineType.splineType == ESplineType.HERMITE)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(CP0.pos, CP1.pos);
+            Gizmos.DrawLine(CP2.pos, CP3.pos);
+        }
     }
 }
 
