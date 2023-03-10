@@ -10,11 +10,6 @@ using UnityEngine;
 public struct ControlPoint
 {
     public Vector3 pos;
-
-    public ControlPoint(Vector3 pos)
-    {
-        this.pos = pos;
-    }
 }
 
 public class Polynomial : MonoBehaviour
