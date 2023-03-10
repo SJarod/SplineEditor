@@ -23,16 +23,13 @@ public class Polynomial : MonoBehaviour
     private int knots = 99;
 
     [SerializeField]
-    private List<ControlPoint> controlPoints = new List<ControlPoint>();
-
-    public Polynomial()
-    {
-        // default control points (4 CP for 3rd degree spline)
-        controlPoints.Add(new ControlPoint());
-        controlPoints.Add(new ControlPoint());
-        controlPoints.Add(new ControlPoint());
-        controlPoints.Add(new ControlPoint());
-    }
+    private ControlPoint CP0;
+    [SerializeField]
+    private ControlPoint CP1;
+    [SerializeField]
+    private ControlPoint CP2;
+    [SerializeField]
+    private ControlPoint CP3;
 
     public Vector3 SplinePolynomial(float t)
     {
@@ -40,13 +37,8 @@ public class Polynomial : MonoBehaviour
         float t2 = t * t;
         Vector4 T = new Vector4(t3, t2, t, 1f);
 
-        Vector3 A = controlPoints[0].pos;
-        Vector3 B = controlPoints[1].pos;
-        Vector3 C = controlPoints[2].pos;
-        Vector3 D = controlPoints[3].pos;
-
         // S = T * M * G
-        return (splineType.G(A, B, C, D) * splineType.M).MultiplyPoint(T);
+        return (splineType.G(CP0.pos, CP1.pos, CP2.pos, CP3.pos) * splineType.M).MultiplyPoint(T);
     }
 
     private void OnDrawGizmos()
