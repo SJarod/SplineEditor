@@ -23,13 +23,9 @@ public class Polynomial : MonoBehaviour
     [SerializeField]
     private int knots = 99;
 
-    [SerializeField]
     public ControlPoint CP0;
-    [SerializeField]
     public ControlPoint CP1;
-    [SerializeField]
     public ControlPoint CP2;
-    [SerializeField]
     public ControlPoint CP3;
 
     public Vector3 SplinePolynomial(float t)
@@ -53,11 +49,21 @@ public class Polynomial : MonoBehaviour
             Gizmos.DrawLine(SplinePolynomial(t), SplinePolynomial(tt));
         }
 
-        if (splineType.splineType == ESplineType.HERMITE)
+        switch (splineType.splineType)
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(CP0.pos, CP1.pos);
-            Gizmos.DrawLine(CP2.pos, CP3.pos);
+            case ESplineType.HERMITE:
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(CP0.pos, CP1.pos);
+                Gizmos.DrawLine(CP2.pos, CP3.pos);
+                break;
+            case ESplineType.BEZIER:
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawLine(CP0.pos, CP1.pos);
+                Gizmos.DrawLine(CP1.pos, CP2.pos);
+                Gizmos.DrawLine(CP2.pos, CP3.pos);
+                break;
+            default:
+                break;
         }
     }
 }
@@ -66,12 +72,10 @@ public class Polynomial : MonoBehaviour
 [CustomEditor(typeof(Polynomial))]
 public class PolynomialEditor : Editor
 {
-    private GameObject gameObject;
     private Polynomial self;
 
     private void OnEnable()
     {
-        gameObject = target.GameObject();
         self = (Polynomial)target;
     }
 
