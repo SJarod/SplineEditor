@@ -24,13 +24,13 @@ public class Polynomial : MonoBehaviour
     private int knots = 99;
 
     [SerializeField]
-    private ControlPoint CP0;
+    public ControlPoint CP0;
     [SerializeField]
-    private ControlPoint CP1;
+    public ControlPoint CP1;
     [SerializeField]
-    private ControlPoint CP2;
+    public ControlPoint CP2;
     [SerializeField]
-    private ControlPoint CP3;
+    public ControlPoint CP3;
 
     public Vector3 SplinePolynomial(float t)
     {
@@ -72,15 +72,15 @@ public class PolynomialEditor : Editor
     private void OnEnable()
     {
         gameObject = target.GameObject();
-        self = gameObject.GetComponentInParent<Polynomial>();
+        self = (Polynomial)target;
     }
 
     private void OnSceneGUI()
     {
-        for (int i = 0; i < gameObject.transform.childCount; ++i)
-        {
-            GameObject child = gameObject.transform.GetChild(i).gameObject;
-        }
+        self.CP0.pos = Handles.PositionHandle(self.CP0.pos, Quaternion.identity);
+        self.CP1.pos = Handles.PositionHandle(self.CP1.pos, Quaternion.identity);
+        self.CP2.pos = Handles.PositionHandle(self.CP2.pos, Quaternion.identity);
+        self.CP3.pos = Handles.PositionHandle(self.CP3.pos, Quaternion.identity);
     }
 
     public override void OnInspectorGUI()
