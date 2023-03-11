@@ -12,7 +12,7 @@ public struct ControlPoint
     public Vector3 pos;
 }
 
-[Serializable]
+[Serializable, ExecuteInEditMode]
 public class Polynomial : MonoBehaviour
 {
     // degree is useless for now
@@ -56,8 +56,9 @@ public class Polynomial : MonoBehaviour
         D.pos = prev.D.pos;
     }
 
-    public void OverrideControlPoints()
+    private void Update()
     {
+        // take previous junction control points if possible (to ensure continuity)
         if (!previousJunction)
             return;
 
@@ -84,8 +85,6 @@ public class Polynomial : MonoBehaviour
         float t2 = t * t;
         Vector4 T = new Vector4(t3, t2, t, 1f);
 
-        OverrideControlPoints();
-
         // S = T * M * G
         return (splineType.G(A.pos, B.pos, C.pos, D.pos) * splineType.M).MultiplyPoint(T);
     }
@@ -109,20 +108,25 @@ public class Polynomial : MonoBehaviour
 
     public void DrawDebugSpline()
     {
-        Vector3 entry = A.pos;
-        if (previousJunction)
-            entry = previousJunction.D.pos;
-
         switch (splineType.splineType)
         {
             case ESplineType.HERMITE:
                 Gizmos.color = Color.red;
-                Gizmos.DrawLine(entry, B.pos);
+                Gizmos.DrawLine(A.pos, B.pos);
                 Gizmos.DrawLine(C.pos, D.pos);
                 break;
             case ESplineType.BEZIER:
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(A.pos, B.pos);
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawLine(entry, B.pos);
+                Gizmos.DrawLine(B.pos, C.pos);
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(C.pos, D.pos);
+                break;
+            case ESplineType.BSPLINE:
+            case ESplineType.CATMULLROM:
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawLine(A.pos, B.pos);
                 Gizmos.DrawLine(B.pos, C.pos);
                 Gizmos.DrawLine(C.pos, D.pos);
                 break;
@@ -132,7 +136,7 @@ public class Polynomial : MonoBehaviour
 
         // main control points
         Gizmos.color = Color.blue;
-        Gizmos.DrawSphere(entry, 1f);
+        Gizmos.DrawSphere(A.pos, 1f);
         Gizmos.DrawSphere(D.pos, 1f);
         // secondary control points
         Gizmos.color = Color.cyan;
@@ -148,11 +152,29 @@ public class Polynomial : MonoBehaviour
     public void DrawMoveTool()
     {
         if (!previousJunction)
-            A.pos = Handles.PositionHandle(A.pos, Quaternion.identity);
-        if (!previousJunction || previousJunction.splineType.splineType != ESplineType.BSPLINE)
         {
+            A.pos = Handles.PositionHandle(A.pos, Quaternion.identity);
             B.pos = Handles.PositionHandle(B.pos, Quaternion.identity);
             C.pos = Handles.PositionHandle(C.pos, Quaternion.identity);
+            D.pos = Handles.PositionHandle(D.pos, Quaternion.identity);
+            return;
+        }
+
+        switch (previousJunction.splineType.splineType)
+        {
+            case ESplineType.HERMITE:
+            case ESplineType.BEZIER:
+                B.pos = Handles.PositionHandle(B.pos, Quaternion.identity);
+                C.pos = Handles.PositionHandle(C.pos, Quaternion.identity);
+                break;
+            case ESplineType.BSPLINE:
+            case ESplineType.CATMULLROM:
+                break;
+            default:
+                A.pos = Handles.PositionHandle(A.pos, Quaternion.identity);
+                B.pos = Handles.PositionHandle(B.pos, Quaternion.identity);
+                C.pos = Handles.PositionHandle(C.pos, Quaternion.identity);
+                break;
         }
         D.pos = Handles.PositionHandle(D.pos, Quaternion.identity);
     }
@@ -160,11 +182,29 @@ public class Polynomial : MonoBehaviour
     public void ControlPointsInspector()
     {
         if (!previousJunction)
-            A.pos = EditorGUILayout.Vector3Field("Control Point 0", A.pos);
-        if (!previousJunction || previousJunction.splineType.splineType != ESplineType.BSPLINE)
         {
+            A.pos = EditorGUILayout.Vector3Field("Control Point 0", A.pos);
             B.pos = EditorGUILayout.Vector3Field("Control Point 1", B.pos);
             C.pos = EditorGUILayout.Vector3Field("Control Point 2", C.pos);
+            D.pos = EditorGUILayout.Vector3Field("Control Point 3", D.pos);
+            return;
+        }
+
+        switch (previousJunction.splineType.splineType)
+        {
+            case ESplineType.HERMITE:
+            case ESplineType.BEZIER:
+                B.pos = EditorGUILayout.Vector3Field("Control Point 1", B.pos);
+                C.pos = EditorGUILayout.Vector3Field("Control Point 2", C.pos);
+                break;
+            case ESplineType.BSPLINE:
+            case ESplineType.CATMULLROM:
+                break;
+            default:
+                A.pos = EditorGUILayout.Vector3Field("Control Point 0", A.pos);
+                B.pos = EditorGUILayout.Vector3Field("Control Point 1", B.pos);
+                C.pos = EditorGUILayout.Vector3Field("Control Point 2", C.pos);
+                break;
         }
         D.pos = EditorGUILayout.Vector3Field("Control Point 3", D.pos);
     }
