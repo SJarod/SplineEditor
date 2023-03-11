@@ -64,19 +64,17 @@ public class Polynomial : MonoBehaviour
         switch (splineType.splineType)
         {
             case ESplineType.HERMITE:
-                A = previousJunction.D;
-                break;
             case ESplineType.BEZIER:
                 A = previousJunction.D;
                 break;
             case ESplineType.BSPLINE:
+            case ESplineType.CATMULLROM:
                 A = previousJunction.B;
                 B = previousJunction.C;
                 C = previousJunction.D;
                 break;
-            case ESplineType.CATMULLROM:
+            default:
                 break;
-            default: break;
         }
     }
 
