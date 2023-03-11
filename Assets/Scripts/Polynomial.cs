@@ -15,6 +15,8 @@ public struct ControlPoint
 [Serializable, ExecuteInEditMode]
 public class Polynomial : MonoBehaviour
 {
+    public int id = 0;
+
     // degree is useless for now
     [SerializeField]
     private int degree = 3;
@@ -181,12 +183,14 @@ public class Polynomial : MonoBehaviour
 
     public void ControlPointsInspector()
     {
+        string name = "Spline " + id;
+
         if (!previousJunction)
         {
-            A.pos = EditorGUILayout.Vector3Field("Control Point 0", A.pos);
-            B.pos = EditorGUILayout.Vector3Field("Control Point 1", B.pos);
-            C.pos = EditorGUILayout.Vector3Field("Control Point 2", C.pos);
-            D.pos = EditorGUILayout.Vector3Field("Control Point 3", D.pos);
+            A.pos = EditorGUILayout.Vector3Field(name + " : 0", A.pos);
+            B.pos = EditorGUILayout.Vector3Field(name + " : 1", B.pos);
+            C.pos = EditorGUILayout.Vector3Field(name + " : 2", C.pos);
+            D.pos = EditorGUILayout.Vector3Field(name + " : 3", D.pos);
             return;
         }
 
@@ -194,19 +198,19 @@ public class Polynomial : MonoBehaviour
         {
             case ESplineType.HERMITE:
             case ESplineType.BEZIER:
-                B.pos = EditorGUILayout.Vector3Field("Control Point 1", B.pos);
-                C.pos = EditorGUILayout.Vector3Field("Control Point 2", C.pos);
+                B.pos = EditorGUILayout.Vector3Field(name + " : 1", B.pos);
+                C.pos = EditorGUILayout.Vector3Field(name + " : 2", C.pos);
                 break;
             case ESplineType.BSPLINE:
             case ESplineType.CATMULLROM:
                 break;
             default:
-                A.pos = EditorGUILayout.Vector3Field("Control Point 0", A.pos);
-                B.pos = EditorGUILayout.Vector3Field("Control Point 1", B.pos);
-                C.pos = EditorGUILayout.Vector3Field("Control Point 2", C.pos);
+                A.pos = EditorGUILayout.Vector3Field(name + " : 0", A.pos);
+                B.pos = EditorGUILayout.Vector3Field(name + " : 1", B.pos);
+                C.pos = EditorGUILayout.Vector3Field(name + " : 2", C.pos);
                 break;
         }
-        D.pos = EditorGUILayout.Vector3Field("Control Point 3", D.pos);
+        D.pos = EditorGUILayout.Vector3Field(name + " : 3", D.pos);
     }
 }
 

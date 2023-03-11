@@ -39,13 +39,21 @@ public class ContinuousSpline : MonoBehaviour
 
         // add to hierarchy
         spline.transform.parent = transform;
-        ++splineCount;
+        p.id = splineCount++;
     }
 
     public void RemovePolynomial()
     {
         DestroyImmediate(transform.GetChild(splineCount - 1).gameObject);
         --splineCount;
+    }
+
+    public void ChangeSplineType()
+    {
+        for (int i = 0; i < transform.childCount; ++i)
+        {
+            GetPolynomialAtIndex(i).splineType = new SplineType(splineType);
+        }
     }
 
     public Polynomial GetPolynomialAtIndex(int index)
@@ -113,6 +121,10 @@ public class ContinuousSplineEditor : Editor
         if (GUILayout.Button("Remove spline"))
         {
             self.RemovePolynomial();
+        }
+        if (GUILayout.Button("Apply spline type to all splines"))
+        {
+            self.ChangeSplineType();
         }
 
         self.ControlPointsInspector();
