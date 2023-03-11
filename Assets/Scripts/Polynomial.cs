@@ -24,11 +24,19 @@ public class Polynomial : MonoBehaviour
     [SerializeField]
     private int knots = 99;
 
+
+    // CONTROL POINTS
+
+    // entry point
     private ControlPoint A;
+
+    // secondary points
     [HideInInspector]
     public ControlPoint B;
     [HideInInspector]
     public ControlPoint C;
+
+    // exit point
     [HideInInspector]
     public ControlPoint D;
 

@@ -43,34 +43,34 @@ public class SplineMatrix
 
 public class SplineUsage
 {
-    public static Matrix4x4 HermiteG(Vector3 R0, Vector3 P0, Vector3 P1, Vector3 R1)
+    public static Matrix4x4 HermiteG(Vector3 entry, Vector3 R0, Vector3 R1, Vector3 exit)
     {
         return new Matrix4x4(
-            new Vector4(P0.x, P0.y, P0.z, 1f),
-            new Vector4(P1.x, P1.y, P1.z, 1f),
+            new Vector4(entry.x, entry.y, entry.z, 1f),
+            new Vector4(exit.x, exit.y, exit.z, 1f),
             new Vector4(R0.x, R0.y, R0.z, 1f),
             new Vector4(R1.x, R1.y, R1.z, 1f)
             );
     }
 
-    public static Matrix4x4 BezierG(Vector3 P0, Vector3 P1, Vector3 P2, Vector3 P3)
+    public static Matrix4x4 BezierG(Vector3 entry, Vector3 P1, Vector3 P2, Vector3 exit)
     {
         return new Matrix4x4(
-            new Vector4(P0.x, P0.y, P0.z, 1f),
+            new Vector4(entry.x, entry.y, entry.z, 1f),
             new Vector4(P1.x, P1.y, P1.z, 1f),
             new Vector4(P2.x, P2.y, P2.z, 1f),
-            new Vector4(P3.x, P3.y, P3.z, 1f)
+            new Vector4(exit.x, exit.y, exit.z, 1f)
             );
     }
 
-    public static Matrix4x4 BSplineG(Vector3 P0, Vector3 P1, Vector3 P2, Vector3 P3)
+    public static Matrix4x4 BSplineG(Vector3 entry, Vector3 P1, Vector3 P2, Vector3 exit)
     {
-        return BezierG(P0, P1, P2, P3);
+        return BezierG(entry, P1, P2, exit);
     }
 
-    public static Matrix4x4 CatmullRomG(Vector3 P0, Vector3 P1, Vector3 P2, Vector3 P3)
+    public static Matrix4x4 CatmullRomG(Vector3 entry, Vector3 P1, Vector3 P2, Vector3 exit)
     {
-        return BezierG(P0, P1, P2, P3);
+        return BezierG(entry, P1, P2, exit);
     }
 }
 
