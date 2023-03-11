@@ -12,7 +12,26 @@ public class ContinuousSpline : MonoBehaviour
 
     public void AddPolynomial()
     {
-        GameObject spline = new GameObject();
+        string name = "none";
+        switch (splineType)
+        {
+            case ESplineType.HERMITE:
+                name = "hermite";
+                break;
+            case ESplineType.BEZIER:
+                name = "bezier";
+                break;
+            case ESplineType.BSPLINE:
+                name = "b-spline";
+                break;
+            case ESplineType.CATMULLROM:
+                name = "catmull-rom";
+                break;
+            default:
+                break;
+        }
+
+        GameObject spline = new GameObject(name);
         Polynomial p = spline.AddComponent<Polynomial>();
         p.InitSpline(splineType);
         if (splineCount > 0)

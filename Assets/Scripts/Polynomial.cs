@@ -101,6 +101,15 @@ public class Polynomial : MonoBehaviour
             default:
                 break;
         }
+
+        // main control points
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(entry, 1f);
+        Gizmos.DrawSphere(D.pos, 1f);
+        // secondary control points
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(B.pos, 1f);
+        Gizmos.DrawSphere(C.pos, 1f);
     }
 
     private void OnDrawGizmosSelected()
