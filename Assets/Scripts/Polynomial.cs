@@ -56,18 +56,40 @@ public class Polynomial : MonoBehaviour
         D.pos = prev.D.pos;
     }
 
+    public void OverrideControlPoints()
+    {
+        if (!previousJunction)
+            return;
+
+        switch (splineType.splineType)
+        {
+            case ESplineType.HERMITE:
+                A = previousJunction.D;
+                break;
+            case ESplineType.BEZIER:
+                A = previousJunction.D;
+                break;
+            case ESplineType.BSPLINE:
+                A = previousJunction.B;
+                B = previousJunction.C;
+                C = previousJunction.D;
+                break;
+            case ESplineType.CATMULLROM:
+                break;
+            default: break;
+        }
+    }
+
     public Vector3 SplinePolynomial(float t)
     {
         float t3 = t * t * t;
         float t2 = t * t;
         Vector4 T = new Vector4(t3, t2, t, 1f);
 
-        Vector3 entry = A.pos;
-        if (previousJunction)
-            entry = previousJunction.D.pos;
+        OverrideControlPoints();
 
         // S = T * M * G
-        return (splineType.G(entry, B.pos, C.pos, D.pos) * splineType.M).MultiplyPoint(T);
+        return (splineType.G(A.pos, B.pos, C.pos, D.pos) * splineType.M).MultiplyPoint(T);
     }
 
     public void DrawSpline()
@@ -129,8 +151,11 @@ public class Polynomial : MonoBehaviour
     {
         if (!previousJunction)
             A.pos = Handles.PositionHandle(A.pos, Quaternion.identity);
-        B.pos = Handles.PositionHandle(B.pos, Quaternion.identity);
-        C.pos = Handles.PositionHandle(C.pos, Quaternion.identity);
+        if (!previousJunction || previousJunction.splineType.splineType != ESplineType.BSPLINE)
+        {
+            B.pos = Handles.PositionHandle(B.pos, Quaternion.identity);
+            C.pos = Handles.PositionHandle(C.pos, Quaternion.identity);
+        }
         D.pos = Handles.PositionHandle(D.pos, Quaternion.identity);
     }
 
@@ -138,8 +163,11 @@ public class Polynomial : MonoBehaviour
     {
         if (!previousJunction)
             A.pos = EditorGUILayout.Vector3Field("Control Point 0", A.pos);
-        B.pos = EditorGUILayout.Vector3Field("Control Point 1", B.pos);
-        C.pos = EditorGUILayout.Vector3Field("Control Point 2", C.pos);
+        if (!previousJunction || previousJunction.splineType.splineType != ESplineType.BSPLINE)
+        {
+            B.pos = EditorGUILayout.Vector3Field("Control Point 1", B.pos);
+            C.pos = EditorGUILayout.Vector3Field("Control Point 2", C.pos);
+        }
         D.pos = EditorGUILayout.Vector3Field("Control Point 3", D.pos);
     }
 }
