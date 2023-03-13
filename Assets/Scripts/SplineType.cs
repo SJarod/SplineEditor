@@ -126,3 +126,12 @@ public class SplineType
     public static SplineType BSpline = new SplineType(ESplineType.BSPLINE);
     public static SplineType CatmullRom = new SplineType(ESplineType.CATMULLROM);
 }
+
+[Serializable]
+public enum EContinuity
+{
+    C0,
+    C1,
+    C2,
+    COUNT
+}

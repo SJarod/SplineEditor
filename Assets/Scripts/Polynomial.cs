@@ -12,7 +12,7 @@ public struct ControlPoint
     public Vector3 pos;
 }
 
-[Serializable, ExecuteInEditMode]
+[Serializable]
 public class Polynomial : MonoBehaviour
 {
     public int id = 0;
@@ -20,7 +20,10 @@ public class Polynomial : MonoBehaviour
     // degree is useless for now
     [SerializeField]
     private int degree = 3;
-    public SplineType splineType = new SplineType(ESplineType.BEZIER);
+    [SerializeField]
+    private SplineType splineType = new SplineType(ESplineType.BEZIER);
+    [SerializeField]
+    private EContinuity continuity = EContinuity.C0;
 
     // spline resolution
     [SerializeField]
@@ -44,9 +47,20 @@ public class Polynomial : MonoBehaviour
 
     private Polynomial previousJunction = null;
 
-    public void InitSpline(ESplineType st)
+    public void InitSpline(ESplineType st = ESplineType.COUNT, EContinuity c = EContinuity.COUNT)
     {
-        splineType = new SplineType(st);
+        {
+            ESplineType reinit = splineType.splineType;
+            if (st != ESplineType.COUNT)
+                reinit = st;
+            splineType = new SplineType(reinit);
+        }
+        {
+            EContinuity reinit = continuity;
+            if (c != EContinuity.COUNT)
+                reinit = c;
+            continuity = reinit;
+        }
     }
 
     public void SetPreviousJunction(Polynomial prev)
@@ -58,7 +72,7 @@ public class Polynomial : MonoBehaviour
         D.pos = prev.D.pos;
     }
 
-    private void Update()
+    private void UpdateControlPoints()
     {
         // take previous junction control points if possible (to ensure continuity)
         if (!previousJunction)
@@ -67,7 +81,23 @@ public class Polynomial : MonoBehaviour
         switch (splineType.splineType)
         {
             case ESplineType.HERMITE:
+                switch (continuity)
+                {
+                    case EContinuity.C1:
+                        break;
+                    case EContinuity.C2:
+                        B = previousJunction.C;
+                        break;
+                }
+                A = previousJunction.D;
+                break;
             case ESplineType.BEZIER:
+                switch (continuity)
+                {
+                    case EContinuity.C1:
+                    case EContinuity.C2:
+                        break;
+                }
                 A = previousJunction.D;
                 break;
             case ESplineType.BSPLINE:
@@ -93,6 +123,8 @@ public class Polynomial : MonoBehaviour
 
     public void DrawSpline()
     {
+        UpdateControlPoints();
+
         Gizmos.color = Color.white;
 
         for (int i = 0; i < knots; ++i)
@@ -165,6 +197,10 @@ public class Polynomial : MonoBehaviour
         switch (previousJunction.splineType.splineType)
         {
             case ESplineType.HERMITE:
+                if (continuity != EContinuity.C2)
+                    B.pos = Handles.PositionHandle(B.pos, Quaternion.identity);
+                C.pos = Handles.PositionHandle(C.pos, Quaternion.identity);
+                break;
             case ESplineType.BEZIER:
                 B.pos = Handles.PositionHandle(B.pos, Quaternion.identity);
                 C.pos = Handles.PositionHandle(C.pos, Quaternion.identity);
@@ -235,7 +271,7 @@ public class PolynomialEditor : Editor
         base.OnInspectorGUI();
 
         // call spline type constructor on inspector update
-        self.splineType = new SplineType(self.splineType.splineType);
+        self.InitSpline();
 
         self.ControlPointsInspector();
     }

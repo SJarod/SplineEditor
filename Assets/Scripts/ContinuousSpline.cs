@@ -8,7 +8,8 @@ using UnityEngine;
 public class ContinuousSpline : MonoBehaviour
 {
     public ESplineType splineType = ESplineType.BEZIER;
-    private int splineCount = 0;
+    public EContinuity continuity = EContinuity.C0;
+    public int splineCount = 0;
 
     public void AddPolynomial()
     {
@@ -33,7 +34,7 @@ public class ContinuousSpline : MonoBehaviour
 
         GameObject spline = new GameObject(name);
         Polynomial p = spline.AddComponent<Polynomial>();
-        p.InitSpline(splineType);
+        p.InitSpline(splineType, continuity);
         if (splineCount > 0)
             p.SetPreviousJunction(GetPolynomialAtIndex(splineCount - 1));
 
@@ -52,7 +53,15 @@ public class ContinuousSpline : MonoBehaviour
     {
         for (int i = 0; i < transform.childCount; ++i)
         {
-            GetPolynomialAtIndex(i).splineType = new SplineType(splineType);
+            GetPolynomialAtIndex(i).InitSpline(splineType);
+        }
+    }
+
+    public void ChangeContinuity()
+    {
+        for (int i = 0; i < transform.childCount; ++i)
+        {
+            GetPolynomialAtIndex(i).InitSpline(ESplineType.COUNT, continuity);
         }
     }
 
@@ -120,11 +129,21 @@ public class ContinuousSplineEditor : Editor
         }
         if (GUILayout.Button("Remove spline"))
         {
+            if (self.splineCount <= 0)
+            {
+                Debug.Log("No spline");
+                return;
+            }
+
             self.RemovePolynomial();
         }
         if (GUILayout.Button("Apply spline type to all splines"))
         {
             self.ChangeSplineType();
+        }
+        if (GUILayout.Button("Apply continuity settings"))
+        {
+            self.ChangeContinuity();
         }
 
         self.ControlPointsInspector();
