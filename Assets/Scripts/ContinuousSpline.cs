@@ -1,8 +1,10 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.Build.Content;
 using UnityEngine;
 
 public class ContinuousSpline : MonoBehaviour
@@ -10,6 +12,15 @@ public class ContinuousSpline : MonoBehaviour
     public ESplineType splineType = ESplineType.BEZIER;
     public EContinuity continuity = EContinuity.C0;
     public int splineCount = 0;
+
+    // in-game rendering
+    public bool renderSpline = true;
+    public int lineRes = 99;
+    [SerializeField]
+    private Material lineRendererMat;
+    [SerializeField]
+    private Color lineColor = Color.white;
+    private LineRenderer lr;
 
     public void AddPolynomial()
     {
@@ -52,26 +63,83 @@ public class ContinuousSpline : MonoBehaviour
     public void ChangeSplineType()
     {
         for (int i = 0; i < transform.childCount; ++i)
-        {
             GetPolynomialAtIndex(i).InitSpline(splineType);
-        }
     }
 
     public void ChangeContinuity()
     {
         for (int i = 0; i < transform.childCount; ++i)
-        {
             GetPolynomialAtIndex(i).InitSpline(ESplineType.COUNT, continuity);
-        }
     }
 
     public Polynomial GetPolynomialAtIndex(int index)
     {
-        return transform.GetChild(index).GetComponent<Polynomial>();
+        if (index >= transform.childCount)
+            return null;
+
+        Transform child = transform.GetChild(index);
+        Polynomial p;
+        bool valid = child.TryGetComponent<Polynomial>(out p);
+        return valid ? p : null;
+    }
+
+    static private float Remap(float x, float a, float b, float c, float d)
+    {
+        return c + (x - a) * (d - c) / (b - a);
+    }
+
+    public Vector3 S(float t)
+    {
+        t = Mathf.Clamp01(t);
+        float rt = Remap(t, 0f, 1f, 0f, splineCount);
+
+        // decimal part of t
+        float d = rt - (int)rt;
+
+        // spline index;
+        int index = (int)rt;
+
+        // last point of spline
+        if (index != 0 && rt % 1f == 0f)
+        {
+            --index;
+            d = 1f;
+        }
+
+        return GetPolynomialAtIndex(index).SplinePolynomial(d);
+    }
+
+    private void UpdateSpline()
+    {
+        for (int i = 0; i < transform.childCount; ++i)
+            GetPolynomialAtIndex(i).UpdateControlPoints();
+    }
+
+    private void Start()
+    {
+        UpdateSpline();
+
+        GameObject go = new GameObject("LineRenderer");
+        lr = go.AddComponent<LineRenderer>();
+
+        lr.positionCount = lineRes;
+        lr.material = lineRendererMat;
+        lr.startWidth = 0.1f;
+        lr.endWidth = 0.1f;
+        lr.startColor = lineColor;
+        lr.endColor = lineColor;
+
+        for (int i = 0; i < lineRes; ++i)
+        {
+            float t = i / (float)(lineRes - 1);
+            lr.SetPosition(i, S(t));
+        }
     }
 
     private void OnDrawGizmos()
     {
+        UpdateSpline();
+
         for (int i = 0; i < transform.childCount; ++i)
         {
             GetPolynomialAtIndex(i).DrawSpline();

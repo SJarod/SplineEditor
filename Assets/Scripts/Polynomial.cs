@@ -53,6 +53,7 @@ public class Polynomial : MonoBehaviour
     // CONTROL POINTS
 
     // entry point
+    [HideInInspector, SerializeField]
     private ControlPoint A;
 
     // secondary points
@@ -65,6 +66,7 @@ public class Polynomial : MonoBehaviour
     [HideInInspector]
     public ControlPoint D;
 
+    [HideInInspector, SerializeField]
     private Polynomial previousJunction = null;
 
     public void InitSpline(ESplineType st = ESplineType.COUNT, EContinuity c = EContinuity.COUNT)
@@ -92,7 +94,7 @@ public class Polynomial : MonoBehaviour
         D.pos = prev.D.pos;
     }
 
-    private void UpdateControlPoints()
+    public void UpdateControlPoints()
     {
         // take previous junction control points if possible (to ensure continuity)
         if (!previousJunction)
@@ -133,6 +135,13 @@ public class Polynomial : MonoBehaviour
         }
     }
 
+    public void Start()
+    {
+        // call spline type constructor when game starts to avoid value problems
+        InitSpline();
+    }
+
+    // S(t)
     public Vector3 SplinePolynomial(float t)
     {
         float t3 = t * t * t;
@@ -145,8 +154,6 @@ public class Polynomial : MonoBehaviour
 
     public void DrawSpline()
     {
-        UpdateControlPoints();
-
         Gizmos.color = Color.white;
 
         for (int i = 0; i < knots; ++i)
@@ -191,13 +198,13 @@ public class Polynomial : MonoBehaviour
         }
 
         // main control points
-        Gizmos.color = Color.blue;
-        Gizmos.DrawSphere(A.pos, 1f);
-        Gizmos.DrawSphere(D.pos, 1f);
+        Handles.color = Color.blue;
+        Handles.Label(A.pos, "Start");
+        Handles.Label(D.pos, "End");
         // secondary control points
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawSphere(B.pos, 1f);
-        Gizmos.DrawSphere(C.pos, 1f);
+        Handles.color = Color.cyan;
+        Handles.Label(B.pos, "P1");
+        Handles.Label(C.pos, "P2");
     }
 
     private void OnDrawGizmosSelected()
