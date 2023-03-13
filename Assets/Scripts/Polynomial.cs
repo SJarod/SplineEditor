@@ -10,6 +10,26 @@ using UnityEngine;
 public struct ControlPoint
 {
     public Vector3 pos;
+
+    private ControlPoint(Vector3 p)
+    {
+        pos= p;
+    }
+
+    static public ControlPoint operator+(ControlPoint p1, ControlPoint p2)
+    {
+        return new ControlPoint(p1.pos + p2.pos);
+    }
+
+    static public ControlPoint operator-(ControlPoint p1, ControlPoint p2)
+    {
+        return new ControlPoint(p1.pos - p2.pos);
+    }
+
+    static public ControlPoint operator-(ControlPoint cp)
+    {
+        return new ControlPoint(-cp.pos);
+    }
 }
 
 [Serializable]
@@ -95,7 +115,9 @@ public class Polynomial : MonoBehaviour
                 switch (continuity)
                 {
                     case EContinuity.C1:
+                        break;
                     case EContinuity.C2:
+                        B = A + (A - previousJunction.C);
                         break;
                 }
                 A = previousJunction.D;
@@ -202,7 +224,8 @@ public class Polynomial : MonoBehaviour
                 C.pos = Handles.PositionHandle(C.pos, Quaternion.identity);
                 break;
             case ESplineType.BEZIER:
-                B.pos = Handles.PositionHandle(B.pos, Quaternion.identity);
+                if (continuity != EContinuity.C2)
+                    B.pos = Handles.PositionHandle(B.pos, Quaternion.identity);
                 C.pos = Handles.PositionHandle(C.pos, Quaternion.identity);
                 break;
             case ESplineType.BSPLINE:
